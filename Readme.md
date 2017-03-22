@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Александр Бренчев](https://up.htmlacademy.ru/javascript/9/user/59895).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Баранов](https://htmlacademy.ru/profile/id14760).
 
 ---
 
