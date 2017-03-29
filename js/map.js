@@ -2,7 +2,7 @@
 
 function getUniqueAvatarURL(maxID, prevOffers) {
   var id = Math.ceil(Math.random() * maxID);
-  var result = 'img/avatars/0' + id + '.png';
+  var result = 'img/avatars/user0' + id + '.png';
   var notUniqueCheck = prevOffers.some(function (offer) {
     return offer.author.avatar === result;
   });
@@ -92,4 +92,16 @@ var GENERATOR_OPTIONS = {
 };
 
 var offers = generateRandomOffers(GENERATOR_OPTIONS);
-console.log(offers);
+
+var offersFragment = document.createDocumentFragment();
+offers.forEach(function (offer) {
+  var nextOffer = document.createElement('div');
+  var nextOfferPic = document.createElement('img');
+  nextOffer.classList.add('pin');
+  nextOffer.style.left = offer.location.x + 'px';
+  nextOffer.style.top = offer.location.y + 'px';
+  nextOfferPic.src = offer.author.avatar;
+  nextOffer.appendChild(nextOfferPic);
+  offersFragment.appendChild(nextOffer);
+});
+map.appendChild(offersFragment);
