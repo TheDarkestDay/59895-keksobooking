@@ -55,9 +55,21 @@ function suggestRoomsCount(evt) {
   }
 }
 
+function fixBorderColor(evt) {
+  if (evt.target.style.borderColor === INVALID_BORDER_COLOR) {
+    evt.target.style.borderColor = DEFAULT_BORDER_COLOR;
+  }
+}
+
+function showInvalidFields(evt) {
+  evt.target.style.borderColor = INVALID_BORDER_COLOR;
+}
+
 var PALACE_THRESHOLD = 10000;
 var FLAT_THRESHOLD = 1000;
 var HUT_THRESHOLD = 0;
+var DEFAULT_BORDER_COLOR = '#d9d9d3';
+var INVALID_BORDER_COLOR = 'rgb(255, 0, 0)';
 
 var checkinField = document.querySelector('#time');
 var checkoutField = document.querySelector('#timeout');
@@ -65,6 +77,7 @@ var priceField = document.querySelector('#price');
 var typeField = document.querySelector('#type');
 var roomsCountField = document.querySelector('#room_number');
 var guestsCountField = document.querySelector('#capacity');
+var offerForm = document.querySelector('.notice__form');
 
 checkinField.addEventListener('change', syncTime);
 checkoutField.addEventListener('change', syncTime);
@@ -74,3 +87,12 @@ typeField.addEventListener('change', suggestPrice);
 
 roomsCountField.addEventListener('change', suggestGuestCount);
 guestsCountField.addEventListener('change', suggestRoomsCount);
+
+offerForm.addEventListener('invalid', showInvalidFields, true);
+
+offerForm.addEventListener('submit', function (evt) {
+  evt.preventDefault();
+  offerForm.reset();
+});
+
+offerForm.addEventListener('input', fixBorderColor);
