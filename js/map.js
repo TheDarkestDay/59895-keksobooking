@@ -105,6 +105,18 @@ function displayOfferDetails(offer, template) {
   offerDialog.replaceChild(offerElem, nodeToReplace);
 }
 
+function openOfferDetailsFromKeyboard(evt) {
+  if (evt.keyCode === ENTER) {
+    openOfferDetails(evt);
+  }
+}
+
+function closeOfferDialogFromKeyboard(evt) {
+  if (evt.keyCode === ESCAPE) {
+    closeOfferDialog();
+  }
+}
+
 function openOfferDetails(evt) {
   var pinElem = evt.target;
   if (pinElem.matches('img')) {
@@ -125,7 +137,7 @@ function deactivateAllPins(pins) {
   });
 }
 
-function closeOfferDialog(evt) {
+function closeOfferDialog() {
   offerDialog.style.display = 'none';
   deactivateAllPins(mapPins);
 }
@@ -153,6 +165,9 @@ var GENERATOR_OPTIONS = {
   OFFERS_COUNT: 8
 };
 
+var ENTER = 13;
+var ESCAPE = 27;
+
 var offers = generateRandomOffers(GENERATOR_OPTIONS);
 
 var offersFragment = document.createDocumentFragment();
@@ -164,6 +179,7 @@ offers.forEach(function (offer, idx) {
   nextOffer.style.left = offer.location.x + 'px';
   nextOffer.style.top = offer.location.y + 'px';
   nextOfferPic.src = offer.author.avatar;
+  nextOfferPic.tabIndex = '0';
   nextOffer.appendChild(nextOfferPic);
   offersFragment.appendChild(nextOffer);
 });
@@ -176,6 +192,9 @@ var closeDialogBtn = offerDialog.querySelector('.dialog__close');
 
 Array.prototype.forEach.call(mapPins, function (pin) {
   pin.addEventListener('click', openOfferDetails);
+  pin.addEventListener('keydown', openOfferDetailsFromKeyboard);
 });
 
 closeDialogBtn.addEventListener('click', closeOfferDialog);
+
+document.addEventListener('keydown', closeOfferDialogFromKeyboard);
