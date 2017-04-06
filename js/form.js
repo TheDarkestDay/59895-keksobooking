@@ -5,6 +5,14 @@ function syncTime(evt) {
   checkoutField.value = evt.target.value;
 }
 
+function isFormValid(validators) {
+  var result = true;
+  validators.forEach(function (validator) {
+    result = result && validator.constraint(validator.field.value);
+  });
+  return result;
+}
+
 function suggestType(evt) {
   var price = evt.target.value;
   if (price >= PALACE_THRESHOLD) {
@@ -56,9 +64,14 @@ function suggestRoomsCount(evt) {
 }
 
 function removeErrorHighlight(evt) {
-  if (evt.target.style.borderColor === INVALID_BORDER_COLOR) {
-    evt.target.style.borderColor = DEFAULT_BORDER_COLOR;
-  }
+  evt.target.style.borderColor = DEFAULT_BORDER_COLOR;
+  evt.target.removeEventListener('input', removeErrorHighlight);
+}
+
+function highlightInvalidField(field) {
+  highlightInvalidFields({
+    target: field
+  });
 }
 
 function highlightInvalidFields(evt) {
@@ -82,6 +95,26 @@ var priceField = offerForm.querySelector('#price');
 var typeField = offerForm.querySelector('#type');
 var roomsCountField = offerForm.querySelector('#room_number');
 var guestsCountField = offerForm.querySelector('#capacity');
+var titleField = offerForm.querySelector('#title');
+
+var priceConstraint = function (value) {
+  return value >= 1000 && value <= 1000000;
+};
+
+var titleConstraint = function (value) {
+  return value.length >= 30 && value.length <= 100;
+};
+
+var validators = [
+  {
+    field: priceField,
+    constraint: priceConstraint
+  },
+  {
+    field: titleField,
+    constraint: titleConstraint
+  }
+];
 
 checkinField.addEventListener('change', syncTime);
 checkoutField.addEventListener('change', syncTime);
@@ -96,7 +129,17 @@ offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
 offerForm.addEventListener('submit', function (evt) {
   evt.preventDefault();
+  if (!isFormValid(validators)) {
+    validators.forEach(function (validator) {
+      if (!validator.constraint(validator.field.value)) {
+        highlightInvalidField(validator.field);
+        validator.field.addEventListener('input', removeErrorHighlight);
+      }
+    });
+
+    return false;
+  }
   offerForm.reset();
+  return true;
 });
 
-offerForm.addEventListener('input', removeErrorHighlight);
