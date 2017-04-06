@@ -1,5 +1,9 @@
 'use strict';
 
+function forEach(array, cb) {
+  Array.prototype.forEach.call(array, cb);
+}
+
 function getUniqueAvatarURL(maxID, prevOffers) {
   var id = Math.ceil(Math.random() * maxID);
   var result = 'img/avatars/user0' + id + '.png';
@@ -122,7 +126,7 @@ function openOfferDetails(evt) {
   if (pinElem.matches('img')) {
     pinElem = evt.target.parentElement;
   }
-  var offerIdx = +pinElem.dataset.index;
+  var offerIdx = Number(pinElem.dataset.index);
   if (offerDialog.style.display === 'none') {
     offerDialog.style.display = 'block';
   }
@@ -132,7 +136,7 @@ function openOfferDetails(evt) {
 }
 
 function deactivateAllPins(pins) {
-  Array.prototype.forEach.call(pins, function (pin) {
+  forEach(pins, function (pin) {
     pin.classList.remove('pin--active');
   });
 }
@@ -190,7 +194,7 @@ displayOfferDetails(offers[0].offer, lodgeTemplate);
 var mapPins = document.querySelectorAll('.pin');
 var closeDialogBtn = offerDialog.querySelector('.dialog__close');
 
-Array.prototype.forEach.call(mapPins, function (pin) {
+forEach(mapPins, function (pin) {
   pin.addEventListener('click', openOfferDetails);
   pin.addEventListener('keydown', openOfferDetailsFromKeyboard);
 });
