@@ -37,10 +37,10 @@ function suggestPrice(evt) {
 function suggestGuestCount(evt) {
   switch (evt.target.value) {
     case '1':
-      guestsCountField.value = 0;
+      guestsCountField.value = NO_GUESTS;
       break;
     default:
-      guestsCountField.value = 3;
+      guestsCountField.value = THREE_GUESTS;
       break;
   }
 }
@@ -48,36 +48,40 @@ function suggestGuestCount(evt) {
 function suggestRoomsCount(evt) {
   switch (evt.target.value) {
     case '0':
-      roomsCountField.value = 1;
+      roomsCountField.value = ONE_ROOM;
       break;
     default:
-      roomsCountField.value = 2;
+      roomsCountField.value = TWO_ROOMS;
   }
 }
 
-function fixBorderColor(evt) {
+function removeErrorHighlight(evt) {
   if (evt.target.style.borderColor === INVALID_BORDER_COLOR) {
     evt.target.style.borderColor = DEFAULT_BORDER_COLOR;
   }
 }
 
-function showInvalidFields(evt) {
+function highlightInvalidFields(evt) {
   evt.target.style.borderColor = INVALID_BORDER_COLOR;
 }
 
 var PALACE_THRESHOLD = 10000;
 var FLAT_THRESHOLD = 1000;
 var HUT_THRESHOLD = 0;
-var DEFAULT_BORDER_COLOR = '#d9d9d3';
+var NO_GUESTS = 0;
+var THREE_GUESTS = 3;
+var ONE_ROOM = 1;
+var TWO_ROOMS = 2;
+var DEFAULT_BORDER_COLOR = 'rgb(217,217,211)';
 var INVALID_BORDER_COLOR = 'rgb(255, 0, 0)';
 
-var checkinField = document.querySelector('#time');
-var checkoutField = document.querySelector('#timeout');
-var priceField = document.querySelector('#price');
-var typeField = document.querySelector('#type');
-var roomsCountField = document.querySelector('#room_number');
-var guestsCountField = document.querySelector('#capacity');
 var offerForm = document.querySelector('.notice__form');
+var checkinField = offerForm.querySelector('#time');
+var checkoutField = offerForm.querySelector('#timeout');
+var priceField = offerForm.querySelector('#price');
+var typeField = offerForm.querySelector('#type');
+var roomsCountField = offerForm.querySelector('#room_number');
+var guestsCountField = offerForm.querySelector('#capacity');
 
 checkinField.addEventListener('change', syncTime);
 checkoutField.addEventListener('change', syncTime);
@@ -88,11 +92,11 @@ typeField.addEventListener('change', suggestPrice);
 roomsCountField.addEventListener('change', suggestGuestCount);
 guestsCountField.addEventListener('change', suggestRoomsCount);
 
-offerForm.addEventListener('invalid', showInvalidFields, true);
+offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
 offerForm.addEventListener('submit', function (evt) {
   evt.preventDefault();
   offerForm.reset();
 });
 
-offerForm.addEventListener('input', fixBorderColor);
+offerForm.addEventListener('input', removeErrorHighlight);
