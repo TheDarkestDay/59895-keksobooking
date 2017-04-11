@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+(function () {
 
   function syncTime(evt) {
     checkinField.value = evt.target.value;

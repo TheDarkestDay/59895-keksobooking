@@ -1,6 +1,6 @@
 'use strict';
 
-window.map = (function (utils, offerCard, offersData, pin) {
+(function (utils, offerCard, offersData, pin) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
