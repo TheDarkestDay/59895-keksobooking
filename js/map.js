@@ -1,6 +1,6 @@
 'use strict';
 
-(function (utils, offerCard, offersData, pin) {
+(function (utils, offerCard, loadOffers, pin, errorMessage) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
@@ -25,6 +25,31 @@
     });
   }
 
+  function processResponse(response) {
+    if (!response.success) {
+      errorMessage.display(response.data);
+      return false;
+    }
+    offersData = response.data;
+
+    offersData.forEach(function (offer, idx) {
+      var nextOffer = pin.render(offer, idx);
+      offersFragment.appendChild(nextOffer);
+    });
+    map.appendChild(offersFragment);
+
+    window.offerCard.update(offersData[0].offer);
+
+    mapPins = document.querySelectorAll('.pin');
+    utils.forEach(mapPins, function (pinElem) {
+      if (!pinElem.classList.contains('pin__main')) {
+        pinElem.addEventListener('click', openOfferDetailsOnClick);
+      }
+      pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
+    });
+    return true;
+  }
+
   function openOfferDetailsOnClick(evt) {
     var pinElem = evt.target;
     if (pinElem.matches('img')) {
@@ -43,22 +68,13 @@
 
   var ENTER = 13;
   var ESCAPE = 27;
+  var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/vata';
+  var offersData = [];
+  var mapPins = [];
 
-  window.offersData.forEach(function (offer, idx) {
-    var nextOffer = pin.render(offer, idx);
-    offersFragment.appendChild(nextOffer);
-  });
-  map.appendChild(offersFragment);
-
-  window.offerCard.update(offersData[0].offer);
-
-  var mapPins = document.querySelectorAll('.pin');
-  utils.forEach(mapPins, function (pinElem) {
-    pinElem.addEventListener('click', openOfferDetailsOnClick);
-    pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
-  });
+  loadOffers(OFFERS_URL, processResponse);
 
   closeDialogBtn.addEventListener('click', closeOfferDetails);
   document.addEventListener('keydown', closeOfferDetailsFromKeyboard);
 
-})(window.utils, window.offerCard, window.offersData, window.pin);
+})(window.utils, window.offerCard, window.loadOffers, window.pin, window.errorMessage);
