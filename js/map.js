@@ -68,7 +68,7 @@
 
   var ENTER = 13;
   var ESCAPE = 27;
-  var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/vata';
+  var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
   var offersData = [];
   var mapPins = [];
 
