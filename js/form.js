@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+window.form = (function () {
 
   function syncTime(evt) {
     checkinField.value = evt.target.value;
@@ -99,6 +99,7 @@
   var roomsCountField = offerForm.querySelector('#room_number');
   var guestsCountField = offerForm.querySelector('#capacity');
   var titleField = offerForm.querySelector('#title');
+  var locationField = offerForm.querySelector('#address');
 
   var priceConstraint = function (value) {
     return value >= 1000 && value <= 1000000;
@@ -146,5 +147,10 @@
     return true;
   });
 
+  return {
+    updateLocation: function (x, y) {
+      locationField.value = 'X: ' + x + ' Y: ' + y;
+    }
+  };
 })();
 

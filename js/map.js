@@ -1,6 +1,6 @@
 'use strict';
 
-(function (utils, offerCard, offersData, pin) {
+(function (utils, offerCard, offersData, pin, form) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
@@ -42,8 +42,14 @@
     if (pinElem.matches('img')) {
       pinElem = evt.target.parentElement;
     }
-    evt.target.style.top = (evt.pageY - mapContainer.offsetTop - locationSelector.offsetHeight / 2) + 'px';
-    evt.target.style.left = (evt.pageX - mapContainer.offsetLeft - locationSelector.offsetWidth / 2) + 'px';
+    var pinPointerX = evt.pageX - mapContainer.offsetLeft - locationSelector.offsetWidth / 2;
+    var pinPointerY = evt.pageY - mapContainer.offsetTop;
+    var pinCenterX = pinPointerX;
+    var pinCenterY = pinPointerY - locationSelector.offsetHeight / 2;
+    evt.target.style.left = pinCenterX + 'px';
+    evt.target.style.top = pinCenterY + 'px';
+    form.updateLocation(pinPointerX, pinPointerY);
+    return true;
   }
 
   function openOfferDetailsOnClick(evt) {
@@ -78,7 +84,9 @@
 
   var mapPins = document.querySelectorAll('.pin');
   utils.forEach(mapPins, function (pinElem) {
-    pinElem.addEventListener('click', openOfferDetailsOnClick);
+    if (!pinElem.classList.contains('pin__main')) {
+      pinElem.addEventListener('click', openOfferDetailsOnClick);
+    }
     pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
   });
 
@@ -91,4 +99,4 @@
 
   locationSelector.addEventListener('mousemove', moveLocationSelector);
 
-})(window.utils, window.offerCard, window.offersData, window.pin);
+})(window.utils, window.offerCard, window.offersData, window.pin, window.form);
