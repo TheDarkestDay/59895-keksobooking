@@ -1,10 +1,13 @@
 'use strict';
 
-(function () {
+(function (syncFields) {
 
-  function syncTime(evt) {
-    checkinField.value = evt.target.value;
-    checkoutField.value = evt.target.value;
+  function syncValues(field, value) {
+    field.value = value;
+  }
+
+  function syncValueWithMin(field, value) {
+    field.min = value;
   }
 
   function isFormValid(validators) {
@@ -119,14 +122,12 @@
     }
   ];
 
-  checkinField.addEventListener('change', syncTime);
-  checkoutField.addEventListener('change', syncTime);
+  syncFields(checkinField, checkoutField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
+  syncFields(checkoutField, checkinField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
+  syncFields(typeField, priceField, ['hut', 'flat', 'palace'], [0, FLAT_THRESHOLD, PALACE_THRESHOLD], syncValueWithMin);
 
-  priceField.addEventListener('input', suggestType);
-  typeField.addEventListener('change', suggestPrice);
-
-  roomsCountField.addEventListener('change', suggestGuestCount);
-  guestsCountField.addEventListener('change', suggestRoomsCount);
+  roomsCountField.addEventListener('input', suggestGuestCount);
+  guestsCountField.addEventListener('input', suggestRoomsCount);
 
   offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
@@ -146,5 +147,5 @@
     return true;
   });
 
-})();
+})(window.syncFields);
 
