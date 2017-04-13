@@ -18,56 +18,6 @@
     return result;
   }
 
-  function suggestType(evt) {
-    var price = evt.target.value;
-    if (price >= PALACE_THRESHOLD) {
-      typeField.value = 'palace';
-      return;
-    }
-
-    if (price >= FLAT_THRESHOLD) {
-      typeField.value = 'flat';
-      return;
-    }
-
-    typeField.value = 'hut';
-  }
-
-  function suggestPrice(evt) {
-    switch (evt.target.value) {
-      case 'palace':
-        priceField.value = PALACE_THRESHOLD;
-        break;
-      case 'flat':
-        priceField.value = FLAT_THRESHOLD;
-        break;
-      default:
-        priceField.value = HUT_THRESHOLD;
-        break;
-    }
-  }
-
-  function suggestGuestCount(evt) {
-    switch (evt.target.value) {
-      case '1':
-        guestsCountField.value = NO_GUESTS;
-        break;
-      default:
-        guestsCountField.value = THREE_GUESTS;
-        break;
-    }
-  }
-
-  function suggestRoomsCount(evt) {
-    switch (evt.target.value) {
-      case '0':
-        roomsCountField.value = ONE_ROOM;
-        break;
-      default:
-        roomsCountField.value = TWO_ROOMS;
-    }
-  }
-
   function removeErrorHighlight(evt) {
     evt.target.style.borderColor = DEFAULT_BORDER_COLOR;
     evt.target.removeEventListener('input', removeErrorHighlight);
@@ -87,10 +37,11 @@
   var PALACE_THRESHOLD = 10000;
   var FLAT_THRESHOLD = 1000;
   var HUT_THRESHOLD = 0;
-  var NO_GUESTS = 0;
-  var THREE_GUESTS = 3;
-  var ONE_ROOM = 1;
-  var TWO_ROOMS = 2;
+  var NO_GUESTS = '0';
+  var THREE_GUESTS = '3';
+  var ONE_ROOM = '1';
+  var TWO_ROOMS = '2';
+  var MANY_ROOMS = '100';
   var DEFAULT_BORDER_COLOR = 'rgb(217,217,211)';
   var INVALID_BORDER_COLOR = 'rgb(255, 0, 0)';
 
@@ -124,10 +75,11 @@
 
   syncFields(checkinField, checkoutField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
   syncFields(checkoutField, checkinField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
-  syncFields(typeField, priceField, ['hut', 'flat', 'palace'], [0, FLAT_THRESHOLD, PALACE_THRESHOLD], syncValueWithMin);
 
-  roomsCountField.addEventListener('input', suggestGuestCount);
-  guestsCountField.addEventListener('input', suggestRoomsCount);
+  syncFields(typeField, priceField, ['hut', 'flat', 'palace'], [HUT_THRESHOLD, FLAT_THRESHOLD, PALACE_THRESHOLD], syncValueWithMin);
+
+  syncFields(roomsCountField, guestsCountField, [ONE_ROOM, TWO_ROOMS, MANY_ROOMS], [NO_GUESTS, THREE_GUESTS, THREE_GUESTS], syncValues);
+  syncFields(guestsCountField, roomsCountField, [NO_GUESTS, THREE_GUESTS], [ONE_ROOM, TWO_ROOMS], syncValues);
 
   offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
