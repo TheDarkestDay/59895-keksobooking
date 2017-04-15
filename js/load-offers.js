@@ -15,10 +15,9 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
-        return true;
+        return;
       }
       onLoad(null, errorMessages[xhr.status]);
-      return false;
     });
 
     xhr.addEventListener('timeout', function () {
