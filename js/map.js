@@ -25,12 +25,12 @@
     });
   }
 
-  function processResponse(response) {
-    if (!response.success) {
-      errorMessage.display(response.data);
+  function processResponse(response, error) {
+    if (error) {
+      errorMessage.display(error);
       return false;
     }
-    offersData = response.data;
+    offersData = response;
 
     offersData.forEach(function (offer, idx) {
       var nextOffer = pin.render(offer, idx);

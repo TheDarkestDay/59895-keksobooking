@@ -10,29 +10,23 @@
     };
 
     var xhr = new XMLHttpRequest();
-    var response = {};
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      response.success = false;
-      response.data = xhr.status + ' : ' + errorMessages[xhr.status];
       if (xhr.status === 200) {
-        response.success = true;
-        response.data = xhr.response;
+        onLoad(xhr.response);
+        return true;
       }
-      onLoad(response);
+      onLoad(null, errorMessages[xhr.status]);
+      return false;
     });
 
     xhr.addEventListener('timeout', function () {
-      response.success = false;
-      response.data = 'Timeout';
-      onLoad(response);
+      onLoad(null, 'Timed out');
     });
 
     xhr.addEventListener('error', function () {
-      response.success = false;
-      response.data = 'Connection error';
-      onLoad(response);
+      onLoad(null, 'Network error');
     });
 
     xhr.open('GET', url);
