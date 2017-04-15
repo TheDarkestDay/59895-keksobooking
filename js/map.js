@@ -1,7 +1,6 @@
 'use strict';
 
-(function (utils, offerCard, offersData, pin, form, errorMessage) {
-
+(function (utils, offerCard, pin, form, errorMessage, loadOffers) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
@@ -59,7 +58,7 @@
     });
     return true;
   }
-    
+
   function moveLocationSelector(evt) {
     if (!isDragging) {
       return false;
@@ -103,7 +102,7 @@
   var mapPins = [];
 
   loadOffers(OFFERS_URL, processResponse);
-  
+
   var isDragging = false;
 
   closeDialogBtn.addEventListener('click', closeOfferDetails);
@@ -115,4 +114,4 @@
 
   locationSelector.addEventListener('mousemove', moveLocationSelector);
 
-})(window.utils, window.offerCard, window.offersData, window.pin, window.form, window.errorMessage);
+})(window.utils, window.offerCard, window.pin, window.form, window.errorMessage, window.loadOffers);
