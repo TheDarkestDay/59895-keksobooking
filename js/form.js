@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function () {
+window.form = (function (syncFields) {
 
   function syncValues(field, value) {
     field.value = value;
