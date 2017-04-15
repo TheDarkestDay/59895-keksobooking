@@ -1,11 +1,21 @@
 'use strict';
 
-(function (utils, offerCard, loadOffers, pin, errorMessage) {
+(function (utils, offerCard, offersData, pin, form, errorMessage) {
+
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
       openOfferDetailsOnClick(evt);
     }
+  }
+
+  function enableDrag(evt) {
+    evt.preventDefault();
+    isDragging = true;
+  }
+
+  function disableDrag() {
+    isDragging = false;
   }
 
   function closeOfferDetails() {
@@ -49,6 +59,24 @@
     });
     return true;
   }
+    
+  function moveLocationSelector(evt) {
+    if (!isDragging) {
+      return false;
+    }
+    var pinElem = evt.target;
+    if (pinElem.matches('img')) {
+      pinElem = evt.target.parentElement;
+    }
+    var pinPointerX = evt.pageX - mapContainer.offsetLeft - locationSelector.offsetWidth / 2;
+    var pinPointerY = evt.pageY - mapContainer.offsetTop;
+    var pinCenterX = pinPointerX;
+    var pinCenterY = pinPointerY - locationSelector.offsetHeight / 2;
+    evt.target.style.left = pinCenterX + 'px';
+    evt.target.style.top = pinCenterY + 'px';
+    form.updateLocation(pinPointerX, pinPointerY);
+    return true;
+  }
 
   function openOfferDetailsOnClick(evt) {
     var pinElem = evt.target;
@@ -62,7 +90,9 @@
     offerCard.update(offersData[offerIdx].offer);
   }
 
-  var map = document.querySelector('.tokyo__pin-map');
+  var mapContainer = document.querySelector('.tokyo');
+  var map = mapContainer.querySelector('.tokyo__pin-map');
+  var locationSelector = map.querySelector('.pin__main');
   var closeDialogBtn = document.querySelector('.dialog__close');
   var offersFragment = document.createDocumentFragment();
 
@@ -73,8 +103,16 @@
   var mapPins = [];
 
   loadOffers(OFFERS_URL, processResponse);
+  
+  var isDragging = false;
 
   closeDialogBtn.addEventListener('click', closeOfferDetails);
   document.addEventListener('keydown', closeOfferDetailsFromKeyboard);
 
-})(window.utils, window.offerCard, window.loadOffers, window.pin, window.errorMessage);
+  locationSelector.addEventListener('mousedown', enableDrag);
+  locationSelector.addEventListener('mouseup', disableDrag);
+  locationSelector.addEventListener('mouseleave', disableDrag);
+
+  locationSelector.addEventListener('mousemove', moveLocationSelector);
+
+})(window.utils, window.offerCard, window.offersData, window.pin, window.form, window.errorMessage);
