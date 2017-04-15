@@ -44,6 +44,12 @@
   var MANY_ROOMS = '100';
   var DEFAULT_BORDER_COLOR = 'rgb(217,217,211)';
   var INVALID_BORDER_COLOR = 'rgb(255, 0, 0)';
+  var CHECKIN_VALUES = ['12', '13', '14'];
+  var CHECKOUT_VALUES = ['12', '13', '14'];
+  var PLACE_TYPES = ['hut', 'flat', 'palace'];
+  var MIN_PRICES = [HUT_THRESHOLD, FLAT_THRESHOLD, PALACE_THRESHOLD];
+  var ROOMS_COUNT_VALUES = [ONE_ROOM, TWO_ROOMS, MANY_ROOMS];
+  var GUESTS_COUNT_VALUES = [NO_GUESTS, THREE_GUESTS, THREE_GUESTS];
 
   var offerForm = document.querySelector('.notice__form');
   var checkinField = offerForm.querySelector('#time');
@@ -73,13 +79,13 @@
     }
   ];
 
-  syncFields(checkinField, checkoutField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
-  syncFields(checkoutField, checkinField, ['12', '13', '14'], ['12', '13', '14'], syncValues);
+  syncFields(checkinField, checkoutField, CHECKIN_VALUES, CHECKOUT_VALUES, syncValues);
+  syncFields(checkoutField, checkinField, CHECKOUT_VALUES, CHECKIN_VALUES, syncValues);
 
-  syncFields(typeField, priceField, ['hut', 'flat', 'palace'], [HUT_THRESHOLD, FLAT_THRESHOLD, PALACE_THRESHOLD], syncValueWithMin);
+  syncFields(typeField, priceField, PLACE_TYPES, MIN_PRICES, syncValueWithMin);
 
-  syncFields(roomsCountField, guestsCountField, [ONE_ROOM, TWO_ROOMS, MANY_ROOMS], [NO_GUESTS, THREE_GUESTS, THREE_GUESTS], syncValues);
-  syncFields(guestsCountField, roomsCountField, [NO_GUESTS, THREE_GUESTS], [ONE_ROOM, TWO_ROOMS], syncValues);
+  syncFields(roomsCountField, guestsCountField, ROOMS_COUNT_VALUES, GUESTS_COUNT_VALUES, syncValues);
+  syncFields(guestsCountField, roomsCountField, GUESTS_COUNT_VALUES, ROOMS_COUNT_VALUES, syncValues);
 
   offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
