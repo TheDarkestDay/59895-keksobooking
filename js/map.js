@@ -37,7 +37,7 @@
   function processResponse(response, error) {
     if (error) {
       errorMessage.display(error);
-      return false;
+      return;
     }
     offersData = response;
 
@@ -56,7 +56,6 @@
       }
       pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
     });
-    return true;
   }
 
   function moveLocationSelector(evt) {
