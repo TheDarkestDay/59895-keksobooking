@@ -25,6 +25,17 @@
     filters.priceRange = priceFilters[evt.target.value];
   }
 
+  function updateFeatures(evt) {
+    var feature = evt.target.value;
+    if (!evt.target.checked) {
+      var featureIdx = desiredFeatures.indexOf(feature);
+      desiredFeatures.splice(featureIdx, 1);
+    } else {
+      desiredFeatures.push(feature);
+    }
+    filters.features = featuresFilter(desiredFeatures);
+  }
+
   function allowAny() {
     return true;
   }
@@ -59,17 +70,31 @@
     return dataRecord.offer.price > HIGH_PRICE;
   }
 
+  function featuresFilter(features) {
+    return function (dataRecord) {
+      var check = true;
+      features.forEach(function (feat) {
+        if (dataRecord.offer.features.indexOf(feat) === -1) {
+          check = false;
+        }
+      });
+      return check;
+    };
+  }
+
   var filterForm = document.querySelector('.tokyo__filters');
   var typeField = filterForm.querySelector('#housing_type');
   var priceField = filterForm.querySelector('#housing_price');
   var roomsCountField = filterForm.querySelector('#housing_room-number');
   var guestsCountField = filterForm.querySelector('#housing_guests-number');
+  var featuresFieldset = filterForm.querySelector('.tokyo__filter-set');
 
   var LOW_PRICE = 10000;
   var HIGH_PRICE = 50000;
 
   var filters = {};
   var filtersArray = [];
+  var desiredFeatures = [];
 
   var typeFilters = {
     'any': allowAny,
@@ -103,5 +128,6 @@
   roomsCountField.addEventListener('change', updateRoomsCountFilter);
   guestsCountField.addEventListener('change', updateGuestsCountFilter);
   priceField.addEventListener('change', updatePriceFilter);
+  featuresFieldset.addEventListener('change', updateFeatures);
 
 })(window.map);
