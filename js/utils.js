@@ -25,6 +25,15 @@ window.utils = (function () {
       }
 
       return result;
+    },
+    debounce: function (fn, duration) {
+      var timer = null;
+      return function () {
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(fn, duration);
+      };
     }
   };
 

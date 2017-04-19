@@ -1,6 +1,6 @@
 'use strict';
 
-(function (map) {
+(function (map, utils) {
 
   function handleChange(evt) {
     filtersArray = Object.keys(filters).map(function (key) {
@@ -91,6 +91,7 @@
 
   var LOW_PRICE = 10000;
   var HIGH_PRICE = 50000;
+  var DEBOUNCE_DURATION = 500;
 
   var filters = {};
   var filtersArray = [];
@@ -122,7 +123,7 @@
     'high': highPriceFilter
   };
 
-  filterForm.addEventListener('change', handleChange);
+  filterForm.addEventListener('change', utils.debounce(handleChange, DEBOUNCE_DURATION));
 
   typeField.addEventListener('change', updateTypeFilter);
   roomsCountField.addEventListener('change', updateRoomsCountFilter);
@@ -130,4 +131,4 @@
   priceField.addEventListener('change', updatePriceFilter);
   featuresFieldset.addEventListener('change', updateFeatures);
 
-})(window.map);
+})(window.map, window.utils);
