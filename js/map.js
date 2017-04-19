@@ -1,6 +1,6 @@
 'use strict';
 
-(function (utils, offerCard, pin, form, errorMessage, loadOffers) {
+window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
@@ -34,28 +34,42 @@
     });
   }
 
+  function clearMap() {
+    utils.forEach(mapPins, function (pinElem) {
+      if (!pinElem.classList.contains('pin__main')) {
+        pinElem.removeEventListener('click', openOfferDetailsOnClick);
+        pinElem.removeEventListener('keydown', openOfferDetailsFromKeyboard);
+        map.removeChild(pinElem);
+      }
+    });
+  }
+
+  function renderPins(offersToShow) {
+    currentOffers = offersToShow;
+    offersToShow.forEach(function (offer, idx) {
+      var nextOffer = pin.render(offer, idx);
+      offersFragment.appendChild(nextOffer);
+    });
+    map.appendChild(offersFragment);
+
+    window.offerCard.update(offersToShow[0].offer);
+
+    mapPins = document.querySelectorAll('.pin');
+    utils.forEach(mapPins, function (pinElem) {
+      if (!pinElem.classList.contains('pin__main')) {
+        pinElem.addEventListener('click', openOfferDetailsOnClick);
+        pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
+      }
+    });
+  }
+
   function processResponse(response, error) {
     if (error) {
       errorMessage.display(error);
       return;
     }
     offersData = response;
-
-    offersData.forEach(function (offer, idx) {
-      var nextOffer = pin.render(offer, idx);
-      offersFragment.appendChild(nextOffer);
-    });
-    map.appendChild(offersFragment);
-
-    window.offerCard.update(offersData[0].offer);
-
-    mapPins = document.querySelectorAll('.pin');
-    utils.forEach(mapPins, function (pinElem) {
-      if (!pinElem.classList.contains('pin__main')) {
-        pinElem.addEventListener('click', openOfferDetailsOnClick);
-      }
-      pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
-    });
+    renderPins(offersData);
   }
 
   function moveLocationSelector(evt) {
@@ -85,7 +99,7 @@
     offerCard.show();
     deactivateAllPins();
     pin.activate(pinElem);
-    offerCard.update(offersData[offerIdx].offer);
+    offerCard.update(currentOffers[offerIdx].offer);
   }
 
   var mapContainer = document.querySelector('.tokyo');
@@ -98,6 +112,7 @@
   var ESCAPE = 27;
   var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
   var offersData = [];
+  var currentOffers = [];
   var mapPins = [];
 
   loadOffers(OFFERS_URL, processResponse);
@@ -112,5 +127,16 @@
   locationSelector.addEventListener('mouseleave', disableDrag);
 
   locationSelector.addEventListener('mousemove', moveLocationSelector);
+
+  return {
+    filterOffers: function (filters) {
+      clearMap();
+      currentOffers = offersData;
+      filters.forEach(function (filterFn) {
+        currentOffers = currentOffers.filter(filterFn);
+      });
+      renderPins(currentOffers);
+    }
+  };
 
 })(window.utils, window.offerCard, window.pin, window.form, window.errorMessage, window.loadOffers);
