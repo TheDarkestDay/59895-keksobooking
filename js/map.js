@@ -46,6 +46,10 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
 
   function renderPins(offersToShow) {
     currentOffers = offersToShow;
+    if (offersToShow.length === 0) {
+      mapPins = [];
+      return;
+    }
     offersToShow.forEach(function (offer, idx) {
       var nextOffer = pin.render(offer, idx);
       offersFragment.appendChild(nextOffer);
