@@ -1,6 +1,6 @@
 'use strict';
 
-(function (utils, offerCard, offersData, pin, form) {
+(function (utils, offerCard, pin, form, errorMessage, loadOffers) {
 
   function openOfferDetailsFromKeyboard(evt) {
     if (evt.keyCode === ENTER) {
@@ -31,6 +31,30 @@
   function deactivateAllPins() {
     window.utils.forEach(mapPins, function (pinElem) {
       pin.deactivate(pinElem);
+    });
+  }
+
+  function processResponse(response, error) {
+    if (error) {
+      errorMessage.display(error);
+      return;
+    }
+    offersData = response;
+
+    offersData.forEach(function (offer, idx) {
+      var nextOffer = pin.render(offer, idx);
+      offersFragment.appendChild(nextOffer);
+    });
+    map.appendChild(offersFragment);
+
+    window.offerCard.update(offersData[0].offer);
+
+    mapPins = document.querySelectorAll('.pin');
+    utils.forEach(mapPins, function (pinElem) {
+      if (!pinElem.classList.contains('pin__main')) {
+        pinElem.addEventListener('click', openOfferDetailsOnClick);
+      }
+      pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
     });
   }
 
@@ -72,23 +96,13 @@
 
   var ENTER = 13;
   var ESCAPE = 27;
+  var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
+  var offersData = [];
+  var mapPins = [];
+
+  loadOffers(OFFERS_URL, processResponse);
+
   var isDragging = false;
-
-  window.offersData.forEach(function (offer, idx) {
-    var nextOffer = pin.render(offer, idx);
-    offersFragment.appendChild(nextOffer);
-  });
-  map.appendChild(offersFragment);
-
-  window.offerCard.update(offersData[0].offer);
-
-  var mapPins = document.querySelectorAll('.pin');
-  utils.forEach(mapPins, function (pinElem) {
-    if (!pinElem.classList.contains('pin__main')) {
-      pinElem.addEventListener('click', openOfferDetailsOnClick);
-    }
-    pinElem.addEventListener('keydown', openOfferDetailsFromKeyboard);
-  });
 
   closeDialogBtn.addEventListener('click', closeOfferDetails);
   document.addEventListener('keydown', closeOfferDetailsFromKeyboard);
@@ -99,4 +113,4 @@
 
   locationSelector.addEventListener('mousemove', moveLocationSelector);
 
-})(window.utils, window.offerCard, window.offersData, window.pin, window.form);
+})(window.utils, window.offerCard, window.pin, window.form, window.errorMessage, window.loadOffers);

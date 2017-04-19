@@ -655,3 +655,27 @@ select option:hover {
 .rounded {
     border-radius: 50%;
 }
+
+.error-message {
+    display: none;
+    padding: 15px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #bd362f;
+    text-align: center;
+    box-shadow: 0 0 12px #999;
+    opacity: 0.8;
+}
+
+.error-message:hover {
+    opacity: 1;
+}
+
+.error-message--opened {
+    display: block;
+}
+
+.error-message__text {
+    color: #ffffff;
+}
