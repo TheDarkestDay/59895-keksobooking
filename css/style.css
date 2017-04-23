@@ -399,6 +399,8 @@ select option:hover {
 }
 
 .form__photo {
+    display: flex;
+    align-items: center;
     margin-right: 5px;
     margin-bottom: 5px;
     box-sizing: border-box;
@@ -654,6 +656,11 @@ select option:hover {
 
 .rounded {
     border-radius: 50%;
+}
+
+.form__photo img {
+    width: 100%;
+    height: auto;
 }
 
 .error-message {

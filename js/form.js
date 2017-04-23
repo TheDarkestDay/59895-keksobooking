@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function (syncFields) {
+window.form = (function (utils, syncFields) {
 
   function syncValues(field, value) {
     field.value = value;
@@ -50,6 +50,25 @@ window.form = (function (syncFields) {
     }
   }
 
+  function addPhoto(evt) {
+    if (evt.target.files.length === 0) {
+      return;
+    }
+    var uploadedFile = evt.target.files[0];
+
+    if (uploadedFile.type.startsWith('image/')) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        offerPhotos[offerPhotosCount].querySelector('img').src = reader.result;
+        offerPhotosCount = offerPhotosCount === OFFER_PHOTOS_LIMIT ? 0 : offerPhotosCount + 1;
+      });
+
+      reader.readAsDataURL(uploadedFile);
+      evt.target.value = '';
+    }
+  }
+
   var PALACE_THRESHOLD = 10000;
   var FLAT_THRESHOLD = 1000;
   var HUT_THRESHOLD = 0;
@@ -78,6 +97,10 @@ window.form = (function (syncFields) {
   var locationField = offerForm.querySelector('#address');
   var avatarField = document.querySelector('.notice__photo input[type="file"]');
   var avatarPreview = document.querySelector('.notice__preview img');
+  var offerPhotos = offerForm.querySelectorAll('.form__photo');
+  var offerPhotoField = offerForm.querySelector('.form__photo-container input[type="file"]');
+
+  var OFFER_PHOTOS_LIMIT = offerPhotos.length - 1;
 
   var priceConstraint = function (value) {
     return value >= 1000 && value <= 1000000;
@@ -97,6 +120,7 @@ window.form = (function (syncFields) {
       constraint: titleConstraint
     }
   ];
+  var offerPhotosCount = 0;
 
   syncFields(checkinField, checkoutField, CHECKIN_VALUES, CHECKOUT_VALUES, syncValues);
   syncFields(checkoutField, checkinField, CHECKOUT_VALUES, CHECKIN_VALUES, syncValues);
@@ -109,6 +133,12 @@ window.form = (function (syncFields) {
   offerForm.addEventListener('invalid', highlightInvalidFields, true);
 
   avatarField.addEventListener('change', updateAvatar);
+  offerPhotoField.addEventListener('change', addPhoto);
+
+  utils.forEach(offerPhotos, function (offerPhotoContainer) {
+    var offerImage = document.createElement('img');
+    offerPhotoContainer.appendChild(offerImage);
+  });
 
   offerForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
@@ -131,6 +161,6 @@ window.form = (function (syncFields) {
       locationField.value = 'X: ' + x + ' Y: ' + y;
     }
   };
-})(window.syncFields);
+})(window.utils, window.syncFields);
 
 
