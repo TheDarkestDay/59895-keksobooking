@@ -34,6 +34,22 @@ window.form = (function (syncFields) {
     evt.target.addEventListener('input', removeErrorHighlight);
   }
 
+  function updateAvatar(evt) {
+    if (evt.target.files.length === 0) {
+      return;
+    }
+    var uploadedFile = evt.target.files[0];
+    if (uploadedFile.type.startsWith('image/')) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(uploadedFile);
+    }
+  }
+
   var PALACE_THRESHOLD = 10000;
   var FLAT_THRESHOLD = 1000;
   var HUT_THRESHOLD = 0;
@@ -60,6 +76,8 @@ window.form = (function (syncFields) {
   var guestsCountField = offerForm.querySelector('#capacity');
   var titleField = offerForm.querySelector('#title');
   var locationField = offerForm.querySelector('#address');
+  var avatarField = document.querySelector('.notice__photo input[type="file"]');
+  var avatarPreview = document.querySelector('.notice__preview img');
 
   var priceConstraint = function (value) {
     return value >= 1000 && value <= 1000000;
@@ -89,6 +107,8 @@ window.form = (function (syncFields) {
   syncFields(guestsCountField, roomsCountField, GUESTS_COUNT_VALUES, ROOMS_COUNT_VALUES, syncValues);
 
   offerForm.addEventListener('invalid', highlightInvalidFields, true);
+
+  avatarField.addEventListener('change', updateAvatar);
 
   offerForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
