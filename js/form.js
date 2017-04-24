@@ -40,13 +40,7 @@ window.form = (function (utils, syncFields) {
     }
     var uploadedFile = evt.target.files[0];
     if (uploadedFile.type.startsWith('image/')) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        avatarPreview.src = reader.result;
-      });
-
-      reader.readAsDataURL(uploadedFile);
+      avatarReader.readAsDataURL(uploadedFile);
     }
   }
 
@@ -57,14 +51,7 @@ window.form = (function (utils, syncFields) {
     var uploadedFile = evt.target.files[0];
 
     if (uploadedFile.type.startsWith('image/')) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        offerPhotos[offerPhotosCount].querySelector('img').src = reader.result;
-        offerPhotosCount = offerPhotosCount === OFFER_PHOTOS_LIMIT ? 0 : offerPhotosCount + 1;
-      });
-
-      reader.readAsDataURL(uploadedFile);
+      offerPhotoReader.readAsDataURL(uploadedFile);
       evt.target.value = '';
     }
   }
@@ -101,6 +88,17 @@ window.form = (function (utils, syncFields) {
   var offerPhotoField = offerForm.querySelector('.form__photo-container input[type="file"]');
 
   var OFFER_PHOTOS_LIMIT = offerPhotos.length - 1;
+  var offerPhotoReader = new FileReader();
+  var avatarReader = new FileReader();
+
+  offerPhotoReader.addEventListener('load', function () {
+    offerPhotos[offerPhotosCount].querySelector('img').src = offerPhotoReader.result;
+    offerPhotosCount = offerPhotosCount === OFFER_PHOTOS_LIMIT ? 0 : offerPhotosCount + 1;
+  });
+
+  avatarReader.addEventListener('load', function () {
+    avatarPreview.src = avatarReader.result;
+  });
 
   var priceConstraint = function (value) {
     return value >= 1000 && value <= 1000000;
