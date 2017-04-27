@@ -13,7 +13,7 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
     isDragging = true;
   }
 
-  function disableDrag() {
+  function disableDrag(evt) {
     isDragging = false;
   }
 
@@ -84,10 +84,6 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
     if (!isDragging) {
       return false;
     }
-    var pinElem = evt.target;
-    if (pinElem.matches('img')) {
-      pinElem = evt.target.parentElement;
-    }
     var pinPointerX = evt.pageX - mapContainer.offsetLeft - locationSelector.offsetWidth / 2;
     var pinPointerY = evt.pageY - mapContainer.offsetTop;
     var pinCenterX = pinPointerX;
@@ -95,8 +91,8 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
     if (!isPointerWithinMap(pinPointerX, pinPointerY)) {
       return false;
     }
-    evt.target.style.left = pinCenterX + 'px';
-    evt.target.style.top = pinCenterY + 'px';
+    locationSelector.style.left = pinCenterX + 'px';
+    locationSelector.style.top = pinCenterY + 'px';
     form.updateLocation(pinPointerX, pinPointerY);
     return true;
   }
@@ -137,7 +133,7 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
 
   locationSelector.addEventListener('mousedown', enableDrag);
   locationSelector.addEventListener('mouseup', disableDrag);
-  locationSelector.addEventListener('mouseleave', disableDrag);
+  mapContainer.addEventListener('mouseleave', disableDrag);
 
   mapContainer.addEventListener('mousemove', moveLocationSelector);
 
