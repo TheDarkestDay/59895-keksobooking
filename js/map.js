@@ -34,6 +34,10 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
     });
   }
 
+  function isPointerWithinMap(pointerX, pointerY) {
+    return pointerX < MAP_X_LIMIT && pointerX > 0 && pointerY < MAP_Y_LIMIT;
+  }
+
   function clearMap() {
     utils.forEach(mapPins, function (pinElem) {
       if (!pinElem.classList.contains('pin__main')) {
@@ -88,6 +92,9 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
     var pinPointerY = evt.pageY - mapContainer.offsetTop;
     var pinCenterX = pinPointerX;
     var pinCenterY = pinPointerY - locationSelector.offsetHeight / 2;
+    if (!isPointerWithinMap(pinPointerX, pinPointerY)) {
+      return false;
+    }
     evt.target.style.left = pinCenterX + 'px';
     evt.target.style.top = pinCenterY + 'px';
     form.updateLocation(pinPointerX, pinPointerY);
@@ -115,6 +122,8 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
   var ENTER = 13;
   var ESCAPE = 27;
   var OFFERS_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
+  var MAP_X_LIMIT = 1147;
+  var MAP_Y_LIMIT = 618;
   var offersData = [];
   var currentOffers = [];
   var mapPins = [];
@@ -130,7 +139,7 @@ window.map = (function (utils, offerCard, pin, form, errorMessage, loadOffers) {
   locationSelector.addEventListener('mouseup', disableDrag);
   locationSelector.addEventListener('mouseleave', disableDrag);
 
-  locationSelector.addEventListener('mousemove', moveLocationSelector);
+  mapContainer.addEventListener('mousemove', moveLocationSelector);
 
   return {
     filterOffers: function (filters) {
